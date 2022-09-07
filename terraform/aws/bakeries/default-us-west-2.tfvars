@@ -4,3 +4,5 @@ region = "us-west-2"
 cluster_name = "pangeo-forge-test"
 
 buckets = ["yuvipanda-test1"]
+
+prometheus_hostname = "prometheus.us-west-2.aws.bakeries.pangeo-forge.omgwtf.in"

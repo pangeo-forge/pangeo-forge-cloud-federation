@@ -37,14 +37,51 @@ variable "flink_operator_version" {
 variable "cluster_autoscaler_version" {
   default     = "9.21.0"
   description = <<-EOT
-  Version of cluster autoscaler to install.
+  Version of cluster autoscaler helm chart to install.
   EOT
 }
 
 variable "cert_manager_version" {
   default     = "1.9.1"
   description = <<-EOT
-  Version of cert-manager to install.
+  Version of cert-manager helm chart to install.
+  EOT
+}
+
+variable "nginx_ingress_version" {
+  default     = "4.2.5"
+  description = <<-EOT
+  Version of the prometheus helm chart to install
+  EOT
+}
+
+variable "prometheus_version" {
+  default     = "15.12.0"
+  description = <<-EOT
+  Version of the prometheus helm chart to install
+  EOT
+}
+variable "prometheus_disk_size" {
+  default     = "16Gi"
+  description = <<-EOT
+  Amount of space to allocate to the disk storing prometheus metrics.
+  EOT
+}
+
+variable "prometheus_metrics_retention_days" {
+  default     = 180
+  type        = number
+  description = <<-EOT
+  Number of days to retain all prometheus metrics for
+  EOT
+}
+
+variable "prometheus_hostname" {
+  default     = ""
+  description = <<-EOT
+  The DNS host at which the prometheus server should be reachable.
+
+  Is just passed along to prometheus.server.ingress.hosts.
   EOT
 }
 

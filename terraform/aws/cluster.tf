@@ -42,6 +42,15 @@ module "eks" {
       source_cluster_security_group = true
     }
 
+    ingress_nginx_ingress_webhook_tcp = {
+      description = "Control plane invokes nginx-ingress webhook"
+      protocol    = "tcp"
+      # 9443 is the *pod* port (not the service port) that the nginx-ingress webhook runs on
+      from_port                     = 8443
+      to_port                       = 8443
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
 
   }
 
