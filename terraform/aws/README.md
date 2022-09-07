@@ -24,4 +24,7 @@ So this repository sets up the following pieces of infrastructure:
 4. The Apache [Flink Operator](https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-stable/)
    itself. While there are a few different operators, this has been the most actively developed
    operator with clearest community governance - so we choose this.
-5. (Optionally) S3 storage buckets to use as either caches or to put data into.
+5. A series of support charts for useful functionality - [prometheus](https://prometheus.io/)
+   for metrics and [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) for
+   getting traffic into the controller. Eventually we will add a Grafana as well.
+6. (Optionally) S3 storage buckets to use as either caches or to put data into.
