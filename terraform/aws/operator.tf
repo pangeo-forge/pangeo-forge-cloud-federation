@@ -8,12 +8,12 @@ resource "helm_release" "cert_manager" {
   version          = var.cert_manager_version
 
   set {
+    # We can manage CRDs from inside Helm itself, no need for a separate kubectl apply
     name  = "installCRDs"
     value = true
   }
   wait = true
   depends_on = [
-    helm_release.cert_manager,
     module.eks
   ]
 }
@@ -26,6 +26,8 @@ resource "helm_release" "flink_operator" {
   wait       = true
 
   depends_on = [
+    # cert-manager is required by flink-operator, as there is a webhook to be validated -
+    # and that requires HTTPS! Note that it doesn't require letsencrypt, just cert-manager.
     helm_release.cert_manager,
   ]
 }
