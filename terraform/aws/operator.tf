@@ -5,7 +5,7 @@ resource "helm_release" "cert_manager" {
   chart            = "cert-manager"
   namespace        = "cert-manager"
   create_namespace = true
-  version          = "1.9.1" # FIXME: Make this configurable
+  version          = var.cert_manager_version
 
   set {
     name  = "installCRDs"

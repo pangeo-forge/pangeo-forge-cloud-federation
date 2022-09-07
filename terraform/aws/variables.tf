@@ -34,6 +34,20 @@ variable "flink_operator_version" {
   EOT
 }
 
+variable "cluster_autoscaler_version" {
+  default     = "9.21.0"
+  description = <<-EOT
+  Version of cluster autoscaler to install.
+  EOT
+}
+
+variable "cert_manager_version" {
+  default     = "1.9.1"
+  description = <<-EOT
+  Version of cert-manager to install.
+  EOT
+}
+
 variable "buckets" {
   default     = []
   description = <<-EOT

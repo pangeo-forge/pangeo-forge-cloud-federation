@@ -16,7 +16,7 @@ resource "helm_release" "autoscaler" {
   name             = "cluster-autoscaler"
   repository       = "https://kubernetes.github.io/autoscaler"
   chart            = "cluster-autoscaler"
-  version          = "9.21.0" # FIXME: Make this configurable
+  version          = var.cluster_autoscaler_version
   namespace        = "cluster-autoscaler"
   create_namespace = true
 
