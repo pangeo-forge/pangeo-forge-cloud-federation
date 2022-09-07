@@ -1,22 +1,7 @@
 
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_id]
-    }
-  }
-
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.0"
+  version = "~> 18"
 
   cluster_name = var.cluster_name
 
@@ -84,37 +69,6 @@ module "eks" {
       client_id = "sts.amazonaws.com"
     }
   }
-
-  # aws-auth configmap
-  # manage_aws_auth_configmap = true
-
-
-  # aws_auth_roles = [
-  #   {
-  #     rolearn  = "arn:aws:iam::66666666666:role/role1"
-  #     username = "role1"
-  #     groups   = ["system:masters"]
-  #   },
-  # ]
-
-  # aws_auth_users = [
-  #   {
-  #     userarn  = "arn:aws:iam::66666666666:user/user1"
-  #     username = "user1"
-  #     groups   = ["system:masters"]
-  #   },
-  #   {
-  #     userarn  = "arn:aws:iam::66666666666:user/user2"
-  #     username = "user2"
-  #     groups   = ["system:masters"]
-  #   },
-  # ]
-
-  # aws_auth_accounts = [
-  #   "777777777777",
-  #   "888888888888",
-  # ]
-
 }
 
 module "cluster_autoscaler_irsa" {
