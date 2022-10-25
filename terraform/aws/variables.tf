@@ -28,7 +28,7 @@ variable "max_instances" {
 }
 
 variable "flink_operator_version" {
-  default     = "1.1.0"
+  default     = "1.2.0"
   description = <<-EOT
   Version of Flink Operator to install.
   EOT
