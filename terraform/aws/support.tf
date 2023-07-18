@@ -1,13 +1,13 @@
 provider "helm" {
   kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    host                   = aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.cluster.certificate_authority[0].data)
 
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks.cluster_id]
+      args = ["eks", "get-token", "--cluster-name", aws_eks_cluster.cluster.name]
     }
   }
 }
@@ -37,8 +37,9 @@ resource "helm_release" "autoscaler" {
   }
 
   wait = true
+
   depends_on = [
-    module.eks
+    aws_eks_cluster.cluster
   ]
 }
 
@@ -91,12 +92,12 @@ resource "helm_release" "prometheus" {
   set {
     # We have a persistent disk attached, so the default (RollingUpdate)
     # can sometimes get 'stuck' and require pods to be manually deleted.
-    name  = "strategy.typ"
+    name  = "strategy.type"
     value = "Recreate"
   }
-  wait = true
+  # wait = true
   depends_on = [
-    module.eks
+    aws_eks_cluster.cluster
   ]
 }
 
@@ -110,6 +111,6 @@ resource "helm_release" "ingress" {
 
   wait = true
   depends_on = [
-    module.eks
+    aws_eks_cluster.cluster
   ]
 }

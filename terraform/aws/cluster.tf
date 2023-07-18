@@ -1,84 +1,54 @@
 
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18"
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
 
-  cluster_name = var.cluster_name
-
-  vpc_id     = data.aws_vpc.default.id
-  subnet_ids = data.aws_subnets.default.ids
-
-  node_security_group_additional_rules = {
-    # This seems to be required for the cluster to really work at all - without this,
-    # pods can't really communicate with each other?!
-    ingress_self_all = {
-      description = "Node to node all ports/protocols"
-      protocol    = "-1"
-      from_port   = 0
-      to_port     = 0
-      type        = "ingress"
-      self        = true
-    }
-    egress_all = {
-      description      = "Node all egress"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
+    principals {
+      type        = "Service"
+      identifiers = ["eks.amazonaws.com"]
     }
 
-    # Every time we create a Flink CRD object, it needs to be validated.
-    # The k8s master needs to POST it to the flink operator to validate it.
-    # This sets up the appropriate network rule for that to work
-    ingress_flink_operator_webhook_tcp = {
-      description = "Control plane invokes flink-operator webhook"
-      protocol    = "tcp"
-      # 9443 is the *pod* port (not the service port) that the flink-operator webhook runs on
-      from_port                     = 9443
-      to_port                       = 9443
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-
-    ingress_nginx_ingress_webhook_tcp = {
-      description = "Control plane invokes nginx-ingress webhook"
-      protocol    = "tcp"
-      # 9443 is the *pod* port (not the service port) that the nginx-ingress webhook runs on
-      from_port                     = 8443
-      to_port                       = 8443
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-
-  }
-
-  # We need to use this if we want node groups that scale to 0.
-  # Many years into EKS being available, but managed nodegroups still can't scale to 0!
-  # https://github.com/aws/containers-roadmap/issues/724
-  # self managed node groups seem a bit flaky, I can't really get them to work
-  self_managed_node_groups = {}
-
-  eks_managed_node_groups = {
-    node = {
-      # min size can't be 0  https://github.com/aws/containers-roadmap/issues/724
-      # BOO
-      min_size     = 1
-      max_size     = var.max_instances
-      desired_size = 1
-
-      instance_types = [var.instance_type]
-    }
-  }
-
-  # OIDC Identity provider
-  cluster_identity_providers = {
-    sts = {
-      client_id = "sts.amazonaws.com"
-    }
+    actions = ["sts:AssumeRole"]
   }
 }
+
+resource "aws_iam_role" "cluster_control_plane" {
+  name               = "${var.cluster_name}-eks-cluster-control-plane"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_controle_plane" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.cluster_control_plane.name
+}
+
+# Setup a cluster in the default VPC with default subnets
+resource "aws_eks_cluster" "cluster" {
+  name     = var.cluster_name
+  role_arn = aws_iam_role.cluster_control_plane.arn
+
+  vpc_config {
+    subnet_ids = data.aws_subnets.default.ids
+  }
+
+  # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
+  # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
+  depends_on = [
+    aws_iam_role_policy_attachment.cluster_controle_plane
+  ]
+}
+
+# Parse the OIDC issuer TLS certificate so we can setup IRSA correctly
+data "tls_certificate" "cluster_oidc_certificate" {
+  url = aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "cluster_oidc" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = data.tls_certificate.cluster_oidc_certificate.certificates[*].sha1_fingerprint
+  url             = data.tls_certificate.cluster_oidc_certificate.url
+}
+
 
 module "cluster_autoscaler_irsa" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
@@ -87,12 +57,12 @@ module "cluster_autoscaler_irsa" {
 
   attach_cluster_autoscaler_policy = true
   cluster_autoscaler_cluster_ids = [
-    module.eks.cluster_id
+    aws_eks_cluster.cluster.id
   ]
 
   oidc_providers = {
     main = {
-      provider_arn = module.eks.oidc_provider_arn
+      provider_arn = aws_iam_openid_connect_provider.cluster_oidc.arn
       # FIXME: We can't depend on release name + ns of cluster-autoscaler helm_release, because it
       # creates a circular dependency (lol).
       namespace_service_accounts = ["cluster-autoscaler:cluster-autoscaler-aws-cluster-autoscaler"]
