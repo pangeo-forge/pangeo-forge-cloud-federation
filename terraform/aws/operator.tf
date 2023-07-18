@@ -13,7 +13,7 @@ resource "helm_release" "cert_manager" {
   }
   wait = true
   depends_on = [
-    module.eks
+    aws_eks_cluster.cluster
   ]
 }
 
