@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  generation: 1
+  labels:
+    app: historyserver
+  name: historyserver
+  namespace: default
+spec:
+  progressDeadlineSeconds: 150
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: historyserver
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: historyserver
+    spec:
+      containers:
+      - args:
+        - history-server
+        command:
+        - /docker-entrypoint.sh
+        env:
+        - name: _POD_IP_ADDRESS
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        image: flink:{{- .Values.flinkVersion }}
+        imagePullPolicy: IfNotPresent
+        name: flink-main-container
+        ports:
+        - containerPort: 8082
+          name: history
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1536Mi
+          requests:
+            cpu: 300m
+            memory: 1536Mi
+        startupProbe:
+          failureThreshold: 2147483647
+          httpGet:
+            path: /config
+            port: history
+            scheme: HTTP
+          periodSeconds: 1
+          successThreshold: 1
+          timeoutSeconds: 1
+        volumeMounts:
+        - mountPath: /opt/history/jobs
+          name: efs-flink-history
+        - mountPath: /opt/flink/conf
+          name: flink-config-volume
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - chown 9999:9999 /opt/history/jobs && ls -lhd /opt/history/jobs
+        image: busybox:1.36.1
+        imagePullPolicy: IfNotPresent
+        name: efs-mount-ownership-fix
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/history/jobs
+          name: efs-flink-history
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 9999
+      serviceAccount: flink
+      serviceAccountName: flink
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: efs-flink-history
+        persistentVolumeClaim:
+          claimName: flink-historyserver-efs-pvc
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: log4j-console.properties
+            path: log4j-console.properties
+          - key: flink-conf.yaml
+            path: flink-conf.yaml
+          name: historyserver-config
+        name: flink-config-volume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: historyserver
+  name: historyserver-rest
+  namespace: default
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: history
+    port: 8082
+    protocol: TCP
+    targetPort: 8082
+  selector:
+    app: historyserver
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

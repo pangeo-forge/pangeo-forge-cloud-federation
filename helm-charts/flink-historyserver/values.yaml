@@ -1,0 +1,4 @@
+efsFileSystemId: ""
+flinkConfigMap: ""
+log4jConfigMap: ""
+flinkVersion: "1.16"
