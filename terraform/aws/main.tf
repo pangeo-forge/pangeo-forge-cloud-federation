@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     # FIXME: Investigate if we need the dynamodb locking here?
-    bucket = "pangeo-forge-federation-tfstate"
+    bucket = "pangeo-forge-federation-gcorradini-tfstate-v3"
     key    = "terraform"
     region = "us-west-2"
   }
@@ -27,5 +27,9 @@ data "aws_subnets" "default" {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
+}
+data "aws_security_group" "default" {
+  vpc_id = data.aws_vpc.default.id
+  name   = "default"
 }
 
