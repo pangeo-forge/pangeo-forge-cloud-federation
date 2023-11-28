@@ -18,7 +18,7 @@ resource "helm_release" "cert_manager" {
 }
 
 resource "local_file" "flink_operator_config" {
-  content  = templatefile("flink_operator_config.tpl",{})
+  content  = templatefile("flink_operator_config.tpl",{ mount_path=var.historyserver_mount_path })
   filename = "flink_operator_config.yaml"
 }
 
