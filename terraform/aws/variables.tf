@@ -138,3 +138,12 @@ variable "buckets" {
   List of S3 Buckets to create.
   EOT
 }
+
+variable "historyserver_mount_path" {
+  default     = "/opt/history/jobs"
+  description = <<-EOT
+  The mount path where Flink historyserver will archive jobs to so it can respond
+
+  to REST requests about statuses after job managers are gone
+  EOT
+}
