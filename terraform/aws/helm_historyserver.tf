@@ -19,7 +19,6 @@ data "kubernetes_config_map" "operator_default" {
   # we handle that reuse here
   metadata {
     name = "flink-operator-config"
-    namespace = "default"
   }
   depends_on = [
     aws_eks_cluster.cluster,
@@ -55,7 +54,6 @@ resource "local_file" "flink_config_output" {
 resource "helm_release" "flink_historyserver" {
   name             = "flink-historyserver"
   chart            = "../../helm-charts/flink-historyserver"
-  namespace        = "default"
   create_namespace = false
 
   set {
