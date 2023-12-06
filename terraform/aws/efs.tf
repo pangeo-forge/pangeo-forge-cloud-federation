@@ -1,5 +1,5 @@
 resource "aws_efs_file_system" "job_history" {
-  creation_token = "pforge-flink-job-history"
+  creation_token = "${var.cluster_name}-flink-job-history"
 }
 
 resource "aws_efs_mount_target" "job_history" {

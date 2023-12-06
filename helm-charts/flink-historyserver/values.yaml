@@ -1,4 +1,2 @@
 efsFileSystemId: ""
-flinkConfig: ""
-log4jConfig: ""
 flinkVersion: "1.16"

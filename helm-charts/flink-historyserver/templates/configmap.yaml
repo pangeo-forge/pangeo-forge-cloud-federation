@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: historyserver-config
-data:
-  flink-conf.yaml: |
-    {{- .Values.flinkConfig | nindent 4 }}
-  log4j-console.properties: |
-    {{- .Values.log4jConfig | nindent 4 }}

@@ -63,6 +63,7 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         fsGroup: 9999
+      # NOTE: this SA is set up by the flink-operator helm chart and reused here
       serviceAccountName: flink
       terminationGracePeriodSeconds: 30
       volumes:
@@ -75,7 +76,8 @@ spec:
             path: log4j-console.properties
           - key: flink-conf.yaml
             path: flink-conf.yaml
-          name: historyserver-config
+          # NOTE: this configmap is set up by the flink-operator helm chart and reused here
+          name: flink-operator-config
         name: flink-config-volume
 ---
 apiVersion: v1
