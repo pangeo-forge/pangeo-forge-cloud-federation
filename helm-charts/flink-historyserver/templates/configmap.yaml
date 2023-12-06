@@ -4,6 +4,6 @@ metadata:
   name: historyserver-config
 data:
   flink-conf.yaml: |
-    {{- .Values.flinkConfigMap | nindent 4 }}
+    {{- .Values.flinkConfig | nindent 4 }}
   log4j-console.properties: |
-    {{- .Values.log4jConfigMap | nindent 4 }}
+    {{- .Values.log4jConfig | nindent 4 }}
