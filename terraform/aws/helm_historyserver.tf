@@ -67,11 +67,11 @@ resource "helm_release" "flink_historyserver" {
     value = "${var.flink_version}"
   }
   set {
-    name  = "log4jConfigMap"
+    name  = "log4jConfig"
     value = local_file.log4j_config_output.content
   }
   set {
-    name  = "flinkConfigMap"
+    name  = "flinkConfig"
     value = local_file.flink_config_output.content
   }
   wait = true
