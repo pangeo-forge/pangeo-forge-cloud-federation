@@ -1,17 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["efsFileSystemId", "log4jConfig", "flinkConfig"],
+  "required": ["efsFileSystemId"],
   "properties": {
     "efsFileSystemId": {
-      "type": "string",
-      "minLength": 1
-    },
-    "log4jConfig": {
-      "type": "string",
-      "minLength": 1
-    },
-    "flinkConfig": {
       "type": "string",
       "minLength": 1
     }
