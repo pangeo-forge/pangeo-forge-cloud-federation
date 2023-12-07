@@ -17,11 +17,6 @@ resource "helm_release" "cert_manager" {
   ]
 }
 
-resource "local_file" "flink_operator_config" {
-  content  = templatefile("flink_operator_config.tpl",{ mount_path=var.historyserver_mount_path })
-  filename = "flink_operator_config.yaml"
-}
-
 resource "helm_release" "flink_operator" {
   name       = "flink-operator"
   repository = "https://downloads.apache.org/flink/flink-kubernetes-operator-${var.flink_operator_version}"
@@ -46,7 +41,7 @@ resource "helm_release" "flink_operator" {
   # Enable prometheus metrics for all
   set {
     name = "defaultConfiguration.flink-conf\\.yaml"
-    value = local_file.flink_operator_config.content
+    value = templatefile("flink_operator_config.tpl",{ mount_path=var.historyserver_mount_path })
   }
 
   set {
