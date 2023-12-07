@@ -41,7 +41,16 @@ resource "helm_release" "flink_operator" {
   # Enable prometheus metrics for all
   set {
     name = "defaultConfiguration.flink-conf\\.yaml"
-    value = templatefile("flink_operator_config.tpl",{ mount_path=var.historyserver_mount_path })
+    value = yamlencode({
+      "kubernetes.operator.metrics.reporter.prom.factory.class" : "org.apache.flink.metrics.prometheus.PrometheusReporter",
+      "kubernetes.operator.metrics.reporter.prom.factory.port" : "9999",
+      "kubernetes.jobmanager.annotations" : {
+        "prometheus.io/scrape" : "true",
+        "prometheus.io/port" : "9999"
+      },
+      "jobmanager.archive.fs.dir": var.historyserver_mount_path,
+      "historyserver.archive.fs.dir": var.historyserver_mount_path,
+    })
   }
 
   set {
