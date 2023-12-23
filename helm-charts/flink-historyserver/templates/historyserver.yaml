@@ -60,7 +60,6 @@ spec:
         volumeMounts:
         - mountPath: /opt/history/jobs
           name: efs-flink-history
-      schedulerName: default-scheduler
       securityContext:
         fsGroup: 9999
       # NOTE: this SA is set up by the flink-operator helm chart and reused here
