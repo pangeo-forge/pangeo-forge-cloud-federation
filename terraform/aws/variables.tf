@@ -12,6 +12,23 @@ variable "cluster_name" {
   EOT
 }
 
+variable "aws_tags" {
+  type        = map(string)
+  default     = {}
+  description = <<-EOT
+  (Optional) AWS resource tags.
+  EOT
+}
+
+variable "permissions_boundary" {
+  type        = string
+  default     = null
+  description = <<-EOT
+  (Optional) ARN of the policy that is used to set the permissions boundary for
+  the role.
+  EOT
+}
+
 variable "instance_type" {
   default     = "t3.large"
   description = <<-EOT

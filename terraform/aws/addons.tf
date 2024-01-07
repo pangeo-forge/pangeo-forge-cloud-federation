@@ -18,6 +18,7 @@ data "aws_iam_policy_document" "assume_role_with_oidc" {
 resource "aws_iam_role" "ebs_provisioner" {
   name               = "${var.cluster_name}-eks-ebs-provisioner"
   assume_role_policy = data.aws_iam_policy_document.assume_role_with_oidc.json
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "ebs_provisioner" {

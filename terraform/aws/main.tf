@@ -16,6 +16,7 @@ terraform {
 
 provider "aws" {
   region = var.region
+  default_tags { tags = var.aws_tags }
 }
 
 data "aws_vpc" "default" {
