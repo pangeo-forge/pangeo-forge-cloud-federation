@@ -29,6 +29,17 @@ variable "permissions_boundary" {
   EOT
 }
 
+variable "aws_vpc" {
+  type = map(string)
+  default = {
+    default = true
+    id = null
+  } 
+  description = <<-EOT
+  (Optional) AWS VPC configuration.
+  EOT
+}
+
 variable "instance_type" {
   default     = "t3.large"
   description = <<-EOT

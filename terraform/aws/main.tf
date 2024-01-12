@@ -20,7 +20,8 @@ provider "aws" {
 }
 
 data "aws_vpc" "default" {
-  default = true
+  default = var.aws_vpc.default
+  id      = var.aws_vpc.id
 }
 
 data "aws_subnets" "default" {
