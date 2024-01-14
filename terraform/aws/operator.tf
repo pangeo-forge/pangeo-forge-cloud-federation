@@ -44,8 +44,8 @@ resource "helm_release" "flink_operator" {
     value = yamlencode({
       # Enable checkpoint for spot instances
       "state.backend.type" : "hashmap",
-      "state.checkpoints.dir" : "s3://${flink_store.id}/checkpoints",
-      "state.savepoints.dir" : "s3://${flink_store.id}/savepoints",
+      "state.checkpoints.dir" : "s3://${aws_s3_bucket.flink_store.id}/checkpoints",
+      "state.savepoints.dir" : "s3://${aws_s3_bucket.flink_store.id}/savepoints",
       "execution.checkpointing.interval" : "1000",
       "execution.checkpointing.min-pause" : "5000",
 
