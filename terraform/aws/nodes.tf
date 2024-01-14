@@ -38,6 +38,8 @@ resource "aws_eks_node_group" "core_nodes" {
 
   instance_types = [var.instance_type]
 
+  capacity_type = "SPOT"
+
   scaling_config {
     desired_size = 1
     max_size     = var.max_instances
