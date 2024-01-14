@@ -34,7 +34,7 @@ variable "aws_vpc" {
   default = {
     default = true
     id = null
-  } 
+  }
   description = <<-EOT
   (Optional) AWS VPC configuration.
   EOT
