@@ -1,0 +1,30 @@
+name: Validate Terraform
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Terraform repo
+        uses: actions/checkout@v3
+
+      - name: Configure local backend
+        run: |
+          cp .github/workflows/backend_override.tf terraform/aws/
+
+      # Install the selected version of Terraform CLI 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        #with:
+        #  terraform_version: ${{ secrets.TERRAFORM_VERSION }}
+
+      - name: Validate AWS runner
+        id: validate
+        working-directory: ./terraform/aws
+        run: |
+          terraform init -input=false
+          terraform validate
