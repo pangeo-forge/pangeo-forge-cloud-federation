@@ -28,6 +28,7 @@ variable "capacity_type" {
   validation {
     condition     = contains(["ON_DEMAND", "SPOT"], var.capacity_type)
     error_message = "The capcity_type value must be ON_DEMAND or SPOT."
+  }
 }
 
 variable "max_instances" {
