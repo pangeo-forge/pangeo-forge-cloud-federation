@@ -19,6 +19,17 @@ variable "instance_type" {
   EOT
 }
 
+variable "capacity_type" {
+  default     = "ON_DEMAND"
+  description = <<-EOT
+  Whether to use ON_DEMAND or SPOT instances.
+  EOT
+  
+  validation {
+    condition     = contains(["ON_DEMAND", "SPOT"], var.capacity_type)
+    error_message = "The capcity_type value must be ON_DEMAND or SPOT."
+}
+
 variable "max_instances" {
   default     = 10
   type        = number
@@ -26,6 +37,7 @@ variable "max_instances" {
   Maximum number of instances the autoscaler will scale the cluster up to.
   EOT
 }
+
 
 variable "flink_operator_version" {
   default     = "1.5.0"
