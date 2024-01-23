@@ -14,7 +14,7 @@ jobs:
 
       - name: Configure local backend
         run: |
-          cp .github/workflows/backend_override.tf terraform/aws/
+          cp ci/backend_override.tf terraform/aws/
 
       # Install the selected version of Terraform CLI 
       - name: Setup Terraform
