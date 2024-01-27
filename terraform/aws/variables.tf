@@ -39,7 +39,6 @@ variable "max_instances" {
   EOT
 }
 
-
 variable "flink_operator_version" {
   default     = "1.5.0"
   description = <<-EOT
