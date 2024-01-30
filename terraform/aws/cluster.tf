@@ -57,6 +57,7 @@ module "cluster_autoscaler_irsa" {
   role_name = "${var.cluster_name}_cluster_autoscaler"
   role_permissions_boundary_arn = var.permissions_boundary
 
+
   attach_cluster_autoscaler_policy = true
   cluster_autoscaler_cluster_ids = [
     aws_eks_cluster.cluster.id
