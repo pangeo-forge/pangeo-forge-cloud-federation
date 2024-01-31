@@ -32,12 +32,7 @@ spec:
           name: history
           protocol: TCP
         resources:
-          limits:
-            cpu: 300m
-            memory: 1536Mi
-          requests:
-            cpu: 300m
-            memory: 1536Mi
+{{ toYaml .Values.resources | indent 10 }}
         startupProbe:
           httpGet:
             path: /config
@@ -90,5 +85,3 @@ spec:
   selector:
     app: historyserver
   type: ClusterIP
-status:
-  loadBalancer: {}

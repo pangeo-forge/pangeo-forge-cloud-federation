@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: {{ .Release.Name }}-efs-flink-history
+  name: {{ .Release.Name }}-efs-flink-history-sc
 parameters:
   provisioningMode: efs-ap
   fileSystemId: "{{- .Values.efsFileSystemId }}"
@@ -10,7 +10,7 @@ provisioner: "efs.csi.aws.com"
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: flink-historyserver-efs-pv
+  name: {{ .Release.Name }}-flink-historyserver-efs-pv
 spec:
   capacity:
     storage: "1Mi"
@@ -31,7 +31,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Release.Name }}-efs-flink-history
+  storageClassName: {{ .Release.Name }}-efs-flink-history-sc
   resources:
     requests:
       storage: 1Mi

@@ -4,8 +4,7 @@
   "required": ["efsFileSystemId"],
   "properties": {
     "efsFileSystemId": {
-      "type": "string",
-      "minLength": 1
+      "type": "string"
     }
   }
 }
