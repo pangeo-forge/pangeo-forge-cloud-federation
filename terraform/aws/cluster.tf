@@ -13,8 +13,9 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "cluster_control_plane" {
-  name               = "${var.cluster_name}-eks-cluster-control-plane"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  name                 = "${var.cluster_name}-eks-cluster-control-plane"
+  assume_role_policy   = data.aws_iam_policy_document.assume_role.json
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "cluster_controle_plane" {
@@ -54,6 +55,7 @@ module "cluster_autoscaler_irsa" {
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
   role_name = "${var.cluster_name}_cluster_autoscaler"
+  role_permissions_boundary_arn = var.permissions_boundary
 
   attach_cluster_autoscaler_policy = true
   cluster_autoscaler_cluster_ids = [

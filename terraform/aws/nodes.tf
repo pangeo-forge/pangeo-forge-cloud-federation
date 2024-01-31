@@ -1,5 +1,6 @@
 resource "aws_iam_role" "nodegroup" {
   name = "${var.cluster_name}-nodegroup-role"
+  permissions_boundary = var.permissions_boundary
 
   assume_role_policy = jsonencode({
     Statement = [{
@@ -37,6 +38,8 @@ resource "aws_eks_node_group" "core_nodes" {
   subnet_ids = data.aws_subnets.default.ids
 
   instance_types = [var.instance_type]
+
+  capacity_type = var.capacity_type
 
   scaling_config {
     desired_size = 1
