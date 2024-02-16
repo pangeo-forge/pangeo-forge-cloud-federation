@@ -40,31 +40,24 @@ variable "aws_vpc" {
   EOT
 }
 
-variable "instance_type" {
-  default     = "t3.large"
-  description = <<-EOT
-  AWS Instance type used for nodes.
-  EOT
-}
+variable "node_groups" {
+  description = "Flink node groups."
+  type        = map(any)
 
-variable "capacity_type" {
-  default     = "ON_DEMAND"
-  description = <<-EOT
-  Whether to use ON_DEMAND or SPOT instances.
-  EOT
-  
-  validation {
-    condition     = contains(["ON_DEMAND", "SPOT"], var.capacity_type)
-    error_message = "The capcity_type value must be ON_DEMAND or SPOT."
+  default = {
+    jobmanager = {
+      node_group_name = "flink-jobmanager"
+      max_instances = 10
+      instance_types = ["t3.large"]
+      capacity_type = "ON_DEMAND"
+    },
+    taskmanager = {
+      node_group_name = "flink-taskmanager"
+      max_instances = 10
+      instance_types = ["t3.large"]
+      capacity_type = "SPOT"
+    }
   }
-}
-
-variable "max_instances" {
-  default     = 10
-  type        = number
-  description = <<-EOT
-  Maximum number of instances the autoscaler will scale the cluster up to.
-  EOT
 }
 
 variable "flink_operator_version" {
