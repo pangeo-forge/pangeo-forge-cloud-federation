@@ -17,7 +17,6 @@ resource "helm_release" "cert_manager" {
   ]
 }
 
-
 resource "helm_release" "flink_operator" {
   name       = "flink-operator"
   repository = "https://downloads.apache.org/flink/flink-kubernetes-operator-${var.flink_operator_version}"
@@ -43,12 +42,14 @@ resource "helm_release" "flink_operator" {
   set {
     name = "defaultConfiguration.flink-conf\\.yaml"
     value = yamlencode({
-      "kubernetes.operator.metrics.reporter.prom.class" : "org.apache.flink.metrics.prometheus.PrometheusReporter",
-      "kubernetes.operator.metrics.reporter.prom.port" : "9999",
+      "kubernetes.operator.metrics.reporter.prom.factory.class" : "org.apache.flink.metrics.prometheus.PrometheusReporter",
+      "kubernetes.operator.metrics.reporter.prom.factory.port" : "9999",
       "kubernetes.jobmanager.annotations" : {
-        "prometheus.io/scrape" : "true"
+        "prometheus.io/scrape" : "true",
         "prometheus.io/port" : "9999"
-      }
+      },
+      "jobmanager.archive.fs.dir": var.historyserver_mount_path,
+      "historyserver.archive.fs.dir": var.historyserver_mount_path,
     })
   }
 

@@ -1,0 +1,8 @@
+flinkVersion: "1.16"
+resources:
+  limits:
+    cpu: 300m
+    memory: 1536Mi
+  requests:
+    cpu: 300m
+    memory: 1536Mi

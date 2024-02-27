@@ -68,9 +68,16 @@ variable "max_instances" {
 }
 
 variable "flink_operator_version" {
-  default     = "1.5.0"
+  default     = "1.6.1"
   description = <<-EOT
   Version of Flink Operator to install.
+  EOT
+}
+
+variable "flink_version" {
+  default     = "1.16"
+  description = <<-EOT
+  Version of Flink to install.
   EOT
 }
 
@@ -129,5 +136,13 @@ variable "buckets" {
   default     = []
   description = <<-EOT
   List of S3 Buckets to create.
+  EOT
+}
+
+variable "historyserver_mount_path" {
+  default     = "/opt/history/jobs"
+  description = <<-EOT
+  The mount path where Flink historyserver will archive jobs to so it can respond
+  to REST requests about statuses after job managers are gone
   EOT
 }
