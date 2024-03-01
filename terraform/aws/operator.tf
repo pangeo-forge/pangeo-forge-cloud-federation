@@ -42,9 +42,13 @@ resource "helm_release" "flink_operator" {
   set {
     name = "defaultConfiguration.flink-conf\\.yaml"
     value = yamlencode({
-      "kubernetes.operator.metrics.reporter.prom.factory.class" : "org.apache.flink.metrics.prometheus.PrometheusReporter",
-      "kubernetes.operator.metrics.reporter.prom.factory.port" : "9999",
+      "kubernetes.operator.metrics.reporter.prom.factory.class" : "org.apache.flink.metrics.prometheus.PrometheusReporterFactory",
+      "kubernetes.operator.metrics.reporter.prom.port" : "9999",
       "kubernetes.jobmanager.annotations" : {
+        "prometheus.io/scrape" : "true",
+        "prometheus.io/port" : "9999"
+      },
+      "kubernetes.taskmanager.annotations" : {
         "prometheus.io/scrape" : "true",
         "prometheus.io/port" : "9999"
       },

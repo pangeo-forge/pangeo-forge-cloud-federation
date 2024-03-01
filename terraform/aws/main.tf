@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     # FIXME: Investigate if we need the dynamodb locking here?
-    bucket = "pangeo-forge-federation-tfstate"
+    bucket = "pangeo-forge-federation-gcorradini-tfstate-v3"
     key    = "terraform"
     region = "us-west-2"
   }
