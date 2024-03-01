@@ -19,7 +19,7 @@ spec:
     - "ReadWriteMany"
   # 'persistentVolumeReclaimPolicy' means EFS volumes must be manually cleaned up when testing is done
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Release.Name }}-efs-flink-history
+  storageClassName: {{ .Release.Name }}-efs-flink-history-sc
   csi:
     driver: "efs.csi.aws.com"
     volumeHandle: "{{- .Values.efsFileSystemId }}"
