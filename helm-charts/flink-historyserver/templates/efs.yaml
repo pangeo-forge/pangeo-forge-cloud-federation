@@ -13,13 +13,13 @@ metadata:
   name: {{ .Release.Name }}-flink-historyserver-efs-pv
 spec:
   capacity:
-    storage: "1Mi"
+    storage: "2Mi"
   volumeMode: "Filesystem"
   accessModes:
     - "ReadWriteMany"
   # 'persistentVolumeReclaimPolicy' means EFS volumes must be manually cleaned up when testing is done
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Release.Name }}-efs-flink-history
+  storageClassName: {{ .Release.Name }}-efs-flink-history-sc
   csi:
     driver: "efs.csi.aws.com"
     volumeHandle: "{{- .Values.efsFileSystemId }}"

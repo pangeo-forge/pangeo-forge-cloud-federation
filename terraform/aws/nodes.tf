@@ -1,5 +1,5 @@
 resource "aws_iam_role" "nodegroup" {
-  name = "${var.cluster_name}-nodegroup-role"
+  name                 = "${var.cluster_name}-nodegroup-role"
   permissions_boundary = var.permissions_boundary
 
   assume_role_policy = jsonencode({
@@ -29,6 +29,11 @@ resource "aws_iam_role_policy_attachment" "node_worker_ecr_policy_attachment" {
   role       = aws_iam_role.nodegroup.name
 }
 
+resource "aws_iam_role_policy_attachment" "node_worker_ssm_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  role       = aws_iam_role.nodegroup.name
+}
+
 resource "aws_eks_node_group" "core_nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "core"
@@ -44,7 +49,7 @@ resource "aws_eks_node_group" "core_nodes" {
   scaling_config {
     desired_size = 1
     max_size     = var.max_instances
-    min_size     = 0
+    min_size     = 1
   }
 
   lifecycle {
