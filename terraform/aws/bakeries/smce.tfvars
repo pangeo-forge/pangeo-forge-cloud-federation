@@ -7,3 +7,5 @@ aws_tags = {
   "Owner" : "aimee",
   "Environment" : "staging",
 }
+
+instance_type = "r5.2xlarge"
