@@ -1,0 +1,24 @@
+
+
+
+defaultConfiguration:
+    flink-conf.yaml: |+
+      taskmanager.numberOfTaskSlots: 1
+      parallelism.default: 1
+      # history server efs mounts
+      historyserver.archive.fs.dir: /opt/history/jobs
+      jobmanager.archive.fs.dir: /opt/history/jobs
+      # metrics reporter for only the flink operator
+      kubernetes.operator.metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      kubernetes.operator.metrics.reporter.prom.port: 9999
+      # metrics reporter for only the flink operator
+      metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+      metrics.reporter.prom.port: 9999
+
+operatorPod:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9999"
+
+metrics:
+  port: 9999
