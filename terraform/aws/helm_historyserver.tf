@@ -5,7 +5,7 @@ provider "kubernetes" {
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = "${aws_eks_cluster.cluster.name}"
+  name = aws_eks_cluster.cluster.name
   depends_on = [
     aws_eks_cluster.cluster,
     helm_release.flink_operator
@@ -13,18 +13,19 @@ data "aws_eks_cluster_auth" "cluster" {
 }
 
 resource "helm_release" "flink_historyserver" {
+  count            = var.enable_flink_historyserver ? 1 : 0
   name             = "flink-historyserver"
   chart            = "../../helm-charts/flink-historyserver"
   create_namespace = false
 
   set {
     name  = "efsFileSystemId"
-    value = "${aws_efs_file_system.job_history.id}"
+    value = aws_efs_file_system.job_history.id
   }
 
   set {
     name  = "flinkVersion"
-    value = "${var.flink_version}"
+    value = var.flink_version
   }
 
   wait = true

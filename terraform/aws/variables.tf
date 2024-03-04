@@ -33,7 +33,7 @@ variable "aws_vpc" {
   type = map(string)
   default = {
     default = true
-    id = null
+    id      = null
   }
   description = <<-EOT
   (Optional) AWS VPC configuration.
@@ -52,7 +52,7 @@ variable "capacity_type" {
   description = <<-EOT
   Whether to use ON_DEMAND or SPOT instances.
   EOT
-  
+
   validation {
     condition     = contains(["ON_DEMAND", "SPOT"], var.capacity_type)
     error_message = "The capcity_type value must be ON_DEMAND or SPOT."
@@ -145,4 +145,9 @@ variable "historyserver_mount_path" {
   The mount path where Flink historyserver will archive jobs to so it can respond
   to REST requests about statuses after job managers are gone
   EOT
+}
+
+variable "enable_flink_historyserver" {
+  default = false
+  type    = bool
 }

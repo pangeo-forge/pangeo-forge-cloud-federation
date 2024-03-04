@@ -34,6 +34,11 @@ resource "aws_iam_role_policy_attachment" "node_worker_ssm_policy_attachment" {
   role       = aws_iam_role.nodegroup.name
 }
 
+resource "aws_iam_role_policy_attachment" "node_worker_s3_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role       = aws_iam_role.nodegroup.name
+}
+
 resource "aws_eks_node_group" "core_nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "core"
