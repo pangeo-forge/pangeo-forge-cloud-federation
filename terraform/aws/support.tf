@@ -114,3 +114,30 @@ resource "helm_release" "ingress" {
     aws_eks_cluster.cluster
   ]
 }
+
+
+resource "helm_release" "grafana" {
+  name       = "grafana"
+  repository = "https://grafana.github.io/helm-charts"
+  chart      = "grafana"
+  version    = var.grafana_version
+  namespace        = "support"
+  create_namespace = true
+  values = [file("${path.module}/grafana-helm-values.yaml")]
+# TODO: figure out how to dynamically load and pass the dashboard.json so we don't have to load it manually
+#  values = [
+#    file("${path.module}/grafana-helm-values.yaml"),
+#<<-EOF
+#dashboards:
+#  default:
+#    support:
+#      json: |
+#        ${file("${path.module}/flink-grafana-dashboard.json")}
+#EOF
+#  ]
+
+  wait       = true
+  depends_on = [
+    aws_eks_cluster.cluster
+  ]
+}

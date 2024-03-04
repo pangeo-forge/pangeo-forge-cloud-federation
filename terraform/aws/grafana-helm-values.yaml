@@ -1,0 +1,69 @@
+persistence:
+  enabled: false
+deploymentStrategy:
+  type: Recreate
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+rbac:
+  namespaced: true
+  pspEnabled: false
+# initChownData refers to an init container enabled by default that isn't
+# needed as we don't reconfigure the linux user the grafana server will run
+# as.
+initChownData:
+  enabled: false
+
+# resources for grafana was set after inspecting cpu and memory use via
+# prometheus and grafana.
+#
+# Grafana's memory use seems to increase over time but seems reasonable to
+# stay below 200Mi for years to come. Grafana's CPU use seems miniscule with
+# peaks at up to 9m CPU from one user is browsing its dashboards.
+#
+# PromQL queries for CPU and memory use:
+# - CPU:    sum(rate(container_cpu_usage_seconds_total{container="grafana", namespace="support"}[5m])) by (pod)
+# - Memory: sum(container_memory_usage_bytes{container="grafana", namespace="support"}) by (pod)
+#
+resources:
+  limits:
+    cpu: 100m
+    memory: 200Mi
+  requests:
+    cpu: 10m
+    memory: 200Mi
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    # Automatically add the prometheus server in the same namespace as the grafana as a datasource
+    - name: prometheus
+      orgId: 1
+      type: prometheus
+      # NOTE: the `url` below make some assumptions about the namespace where you released eoapi and prometheus
+      # 1) that you didn't change the default name of the `prometheus-server` or the port and installed in eoapi namespace
+      # 2) namely that you ran `helm install eoapi --create-namespace=eoapi`  with the `eoapi` namespace
+      url: http://prometheus-server.support.svc.cluster.local
+      access: proxy
+      jsonData:
+        timeInterval: "5s"
+      isDefault: true
+      editable: true
+      version: 1 # This number should be increased when changes are made to update the datasource
+
+# TODO: figure out how to dynamically load and pass the dashboard.json so we don't have to load it manually
+#dashboardProviders:
+#  dashboardproviders.yaml:
+#    apiVersion: 1
+#    providers:
+#      - name: 'default'
+#        orgId: 1
+#        folder: ''
+#        type: file
+#        disableDeletion: false
+#        editable: true
+#        options:
+#          path: /var/lib/grafana/dashboards/default
