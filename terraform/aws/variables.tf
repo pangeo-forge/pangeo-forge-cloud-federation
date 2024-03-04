@@ -102,6 +102,13 @@ variable "nginx_ingress_version" {
   EOT
 }
 
+variable "grafana_version" {
+  default     = "7.3.3"
+  description = <<-EOT
+  Version of the grafana helm chart to install
+  EOT
+}
+
 variable "prometheus_version" {
   default     = "15.12.0"
   description = <<-EOT
