@@ -20,7 +20,7 @@ resource "helm_release" "flink_historyserver" {
 
   set {
     name  = "efsFileSystemId"
-    value = aws_efs_file_system.job_history.id
+    value = aws_efs_file_system.job_history[0].id
   }
 
   set {
