@@ -8,4 +8,5 @@ aws_tags = {
   "Environment" : "staging",
 }
 
+enable_flink_historyserver = false
 # instance_type = "r5.2xlarge"

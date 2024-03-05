@@ -23,7 +23,7 @@ resource "helm_release" "flink_operator" {
   chart      = "flink-kubernetes-operator"
   version    = var.flink_operator_version
   wait       = true
-  values = [file("${path.module}/flink-operator-helm-values.yaml")]
+  values     = [file("${path.module}/flink-operator-helm-values.yaml")]
 
   depends_on = [
     # cert-manager is required by flink-operator, as there is a webhook to be validated -
