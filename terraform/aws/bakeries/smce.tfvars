@@ -8,4 +8,4 @@ aws_tags = {
   "Environment" : "staging",
 }
 
-# instance_type = "r5.2xlarge"
+instance_type = "t3.xlarge"
