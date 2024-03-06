@@ -1,0 +1,9 @@
+name: terraform
+channels:
+  - conda-forge
+dependencies:
+  - awscli
+  - terraform
+  - ca-certificates
+  - certifi
+  - openssl
