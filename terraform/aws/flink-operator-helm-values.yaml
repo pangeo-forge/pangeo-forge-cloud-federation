@@ -4,6 +4,10 @@
 defaultConfiguration:
     flink-conf.yaml: |+
       #### defaultConfiguration from pangeo-forge-cloud-federation ####
+      # on aws pull base image from ecr
+      kubernetes.container.image.ref: public.ecr.aws/docker/library/flink:latest
+
+
       taskmanager.numberOfTaskSlots: 1
       parallelism.default: 1
 
