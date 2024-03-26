@@ -41,8 +41,9 @@ resource "aws_eks_addon" "ebs_provisioner" {
 
 # EFS CSI Driver for HistoryServer
 resource "aws_iam_role" "efs_provisioner" {
-  name               = "${var.cluster_name}-eks-efs-provisioner"
-  assume_role_policy = data.aws_iam_policy_document.assume_role_with_oidc.json
+  name                 = "${var.cluster_name}-eks-efs-provisioner"
+  assume_role_policy   = data.aws_iam_policy_document.assume_role_with_oidc.json
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "efs_provisioner" {

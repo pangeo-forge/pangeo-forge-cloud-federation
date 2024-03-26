@@ -33,7 +33,7 @@ variable "aws_vpc" {
   type = map(string)
   default = {
     default = true
-    id = null
+    id      = null
   }
   description = <<-EOT
   (Optional) AWS VPC configuration.
@@ -52,7 +52,7 @@ variable "capacity_type" {
   description = <<-EOT
   Whether to use ON_DEMAND or SPOT instances.
   EOT
-  
+
   validation {
     condition     = contains(["ON_DEMAND", "SPOT"], var.capacity_type)
     error_message = "The capcity_type value must be ON_DEMAND or SPOT."
@@ -80,6 +80,14 @@ variable "flink_version" {
   Version of Flink to install.
   EOT
 }
+
+variable "flink_image_registry" {
+  default     = "public.ecr.aws/docker/library/"
+  description = <<-EOT
+  Registry containing Flink image.
+  EOT
+}
+
 
 variable "cluster_autoscaler_version" {
   default     = "9.21.0"
